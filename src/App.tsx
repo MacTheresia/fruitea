@@ -20,7 +20,7 @@ export default function App() {
     <NavigationContainer>
         {/* Définir Home comme page par défaut */}
       <FloatingButton>
-        <Stack.Navigator initialRouteName="CardRotate">
+        <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen}/>
           <Stack.Screen name="Product" component={ProductScreen} />
           <Stack.Screen name="ProductInfo" component={ProductInfoScreen} />

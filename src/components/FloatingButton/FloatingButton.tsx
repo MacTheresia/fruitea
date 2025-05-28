@@ -18,7 +18,7 @@ type RootStackParamList = {
   Infos: undefined;
 };
 
-export default function FloatingButton() {
+export default function FloatingButton({children}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -30,12 +30,14 @@ export default function FloatingButton() {
 
   const menuItems = [
     { label: 'Accueil', icon: <Ionicons name="home" size={18} color="white" />, route: 'Home' },
-    { label: 'Jus',      icon: <MaterialCommunityIcons name="glass-cocktail" size={18} color="white" />, route: 'Jus' },
+    { label: 'Produits',      icon: <MaterialCommunityIcons name="glass-cocktail" size={18} color="white" />, route: 'Product' },
     { label: 'Commandes',icon: <Ionicons name="receipt" size={18} color="white" />, route: 'Commandes' },
     { label: 'Infos',    icon: <FontAwesome5 name="info-circle" size={18} color="white" />, route: 'Infos' },
   ];
 
   return (
+    <>
+    {children}
     <TouchableWithoutFeedback onPress={closeMenu}>
       <View style={styles.container}>
         {menuOpen && (
@@ -70,19 +72,19 @@ export default function FloatingButton() {
         </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 80,
+    bottom: 20,
     left: 0, right: 0,
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
   menuWrapper: {
-    backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 20,
     flexDirection: 'row',
@@ -113,8 +115,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5,
-    marginBottom: 10,
+    // elevation: 5,
+    // marginBottom: 1,
   },
   iconImage: {
     width: 30,

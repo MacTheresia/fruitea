@@ -6,7 +6,7 @@ const Styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#ffff',
   },
   title: {
     fontSize: 22,
@@ -48,4 +48,27 @@ const CardStyles = StyleSheet.create({
     },
   });
 
-export default {Styles, CardStyles}
+const TextStyles = StyleSheet.create({
+  text1: {
+    fontSize: 16,
+    color: '#333333',
+    fontWeight: '400',
+    lineHeight: 24,
+    justifyContent : 'center',
+  },
+  text2: {
+    fontSize: 14,
+    color: '#888888',
+    fontStyle: 'italic',
+    lineHeight: 20,
+  },
+  titre: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    textAlign: 'center',
+    marginVertical: 16,
+  },
+});
+
+export default {Styles, CardStyles, TextStyles}
