@@ -15,15 +15,14 @@ import {
   View,
 } from "react-native";
 import { auth, db } from "../../firebase/firebaseConfig";
-import { useAuth } from "@/hooks/useAuths";
-import { useRouter } from "expo-router";
+import { useAuth } from "../../hooks/useAuths";
+import { useNavigation } from "@react-navigation/native";
 
 type Order = {
   id: string;
   status: string;
   date: string;
 };
-
 
 export default function Profile() {
   const [name, setName] = useState("");
@@ -33,7 +32,7 @@ export default function Profile() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [isSaving, setIsSaving] = useState(false);
   const { user } = useAuth();
-  const router = useRouter();
+  const navigation = useNavigation();
 
   const [orders, setOrders] = useState<Order[]>([
     { id: "001", status: "Livrée", date: "2025-04-12" },
@@ -44,14 +43,12 @@ export default function Profile() {
     const fetchUserData = async () => {
       if (auth.currentUser) {
         setEmail(auth.currentUser.email || "");
-
         const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
         if (userDoc.exists()) {
           setName(userDoc.data().name || "");
         }
       }
     };
-
     fetchUserData();
   }, []);
 
@@ -76,57 +73,56 @@ export default function Profile() {
     });
   };
 
-const handleSave = async () => {
-  if (!name) {
-    Alert.alert("Veuillez remplir le nom.");
-    return;
-  }
-
-  setIsSaving(true);
-
-  try {
-    if (auth.currentUser) {
-      await setDoc(
-        doc(db, "users", auth.currentUser.uid),
-        {
-          name,
-          updatedAt: new Date(),
-        },
-        { merge: true }
-      );
+  const handleSave = async () => {
+    if (!name) {
+      Alert.alert("Veuillez remplir le nom.");
+      return;
     }
-    openModal();
-  } catch (error) {
-    Alert.alert("Erreur", "Une erreur est survenue lors de la sauvegarde.");
-  } finally {
-    setIsSaving(false);
+
+    setIsSaving(true);
+
+    try {
+      if (auth.currentUser) {
+        await setDoc(
+          doc(db, "users", auth.currentUser.uid),
+          {
+            name,
+            updatedAt: new Date(),
+          },
+          { merge: true }
+        );
+      }
+      openModal();
+    } catch (error) {
+      Alert.alert("Erreur", "Une erreur est survenue lors de la sauvegarde.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (!user) {
+    return (
+      <View style={styles.authContainer}>
+        <MaterialIcons
+          name="lock-outline"
+          size={60}
+          color="#faae89"
+          style={{ marginBottom: 20 }}
+        />
+        <Text style={styles.authTitle}>Tu n'es pas connecté(e) !</Text>
+        <Text style={styles.authText}>
+          Connecte-toi pour accéder à ton profil, modifier tes infos et suivre tes
+          commandes.
+        </Text>
+        <Pressable
+          onPress={() => navigation.navigate("auth")}
+          style={styles.authButton}
+        >
+          <Text style={styles.authButtonText}>Se connecter</Text>
+        </Pressable>
+      </View>
+    );
   }
-};
-
-if (!user) {
-  return (
-    <View style={styles.authContainer}>
-      <MaterialIcons
-        name="lock-outline"
-        size={60}
-        color="#faae89"
-        style={{ marginBottom: 20 }}
-      />
-      <Text style={styles.authTitle}>Tu n'es pas connecté(e) !</Text>
-      <Text style={styles.authText}>
-        Connecte-toi pour accéder à ton profil, modifier tes infos et suivre tes
-        commandes.
-      </Text>
-
-      <Pressable
-        onPress={() => router.push("/page/AuthScreen")}
-        style={styles.authButton}
-      >
-        <Text style={styles.authButtonText}>Se connecter</Text>
-      </Pressable>
-    </View>
-  );
-}
 
   return (
     <View style={styles.container}>
@@ -230,6 +226,7 @@ if (!user) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

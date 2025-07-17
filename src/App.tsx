@@ -11,6 +11,8 @@ import CarteScreen from './pages/Carte';
 import FloatingButton from './components/FloatingButton/FloatingButton';
 import AuthScreen from './pages/AuthScreen/AuthScreen';
 import Header from './components/Header/Header';
+import Profile from './pages/Profile/Profile';
+import OrderHistory from './pages/OrderHistory/OrderHistory';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +30,7 @@ export default function App() {
         setCurrentRoute(navigationRef.getCurrentRoute()?.name);
       }}
     >
-      <Stack.Navigator initialRouteName="auth">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           name="auth"
           component={AuthScreen}
@@ -40,7 +42,7 @@ export default function App() {
           options={{ header: () => <Header /> }}
         />
         <Stack.Screen
-          name="Product"
+          name="Product" 
           component={ProductScreen}
           options={{ header: () => <Header /> }}
         />
@@ -49,14 +51,15 @@ export default function App() {
           component={ProductInfoScreen}
           options={{ header: () => <Header /> }}
         />
-        <Stack.Screen
-          name="Carte"
-          component={CarteScreen}
+         <Stack.Screen
+          name="Profile"
+          component={Profile}
           options={{ header: () => <Header /> }}
         />
+        
         <Stack.Screen
-          name="ChangeColor"
-          component={ChangeColorScreen}
+          name="History"
+          component={OrderHistory}
           options={{ header: () => <Header /> }}
         />
       </Stack.Navigator>

@@ -1,14 +1,22 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type RootStackParamList = {
+  History: undefined;
+  Profile: undefined;
+};
 
 export default function HeaderButton() {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <View style={styles.container}>
       <View style={styles.iconWrapper}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => console.log("Ajouté au panier !")}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Profile")}>
           <AntDesign name="shoppingcart" size={20} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconButton} onPress={() => console.log("Profil ouvert !")}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Profile")}>
           <AntDesign name="user" size={20} color="white" />
         </TouchableOpacity>
       </View>

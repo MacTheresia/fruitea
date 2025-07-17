@@ -40,7 +40,7 @@ const HomeScreen: React.FC = () => {
             data={datas}
             keyExtractor={(_, index) => index.toString()}
             renderItem={({ item }) => (
-              <CardItem titre={item.titre} image={item.image} />
+              <CardItem titre={item.title} image={item.image} />
             )}
             horizontal
             showsHorizontalScrollIndicator={false}
