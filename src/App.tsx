@@ -25,7 +25,7 @@ export default function App() {
   const [currentRoute, setCurrentRoute] = useState<string | undefined>(undefined);
 
   return (
-
+    <StripeProvider publishableKey="pk_test_51Rko7IQ7nSq6aHPE9fy3qExDrNcM216nYZUApsDSew815oCfbiWru5MWJZTAizFz0L0WgXhhcPyiRjQESgCOEGLN00x27cwm9o">
     <NavigationContainer
       ref={navigationRef}
       onReady={() => {
@@ -88,5 +88,6 @@ export default function App() {
 
       <StatusBar style="auto" />
     </NavigationContainer>
+    </StripeProvider>
   );
 }
