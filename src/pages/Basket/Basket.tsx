@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { useAuth } from "../../hooks/useAuths";
+import { useCart } from "../../contexts/CartContext";
 
 const mockCartItems = [
   {
@@ -23,7 +24,7 @@ const mockCartItems = [
 ];
 
 export default function Basket() {
-  const [cartItems, setCartItems] = useState(mockCartItems);
+  const { cartItems, updateQuantity, removeFromCart, clearCart } = useCart();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{
     id: string;
@@ -34,31 +35,22 @@ export default function Basket() {
   const { user } = useAuth(); //  vérifie si l'utilisateur est connecté
   const navigation = useNavigation<any>();
 
-  const updateQuantity = (id: string, delta: number) => {
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
 
-  const handleConfirmRemove = () => {
-    if (selectedItem) {
-      setCartItems((prev) =>
-        prev.filter((item) => item.id !== selectedItem.id)
-      );
-      setSelectedItem(null);
-    }
+const handleConfirmRemove = () => {
+  if (selectedItem) {
+    removeFromCart(selectedItem.id); // ✅ utilise removeFromCart ici
+    setSelectedItem(null);
     setModalVisible(false);
-  };
+  }
+};
+
 
   const handleValidateOrder = () => {
     if (user) {
       navigation.navigate("Commandes", {
         cartItems: JSON.stringify(cartItems),
       });
+      clearCart();
     } else {
       setShowLoginAlert(true);
     }
