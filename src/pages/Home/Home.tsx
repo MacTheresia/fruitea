@@ -8,6 +8,9 @@ import AnimatedText from '../../components/AnimatedText/AnimatedText';
 import CardItem from '../../components/CardItem/CardItem';
 import ToppingCard from '../../components/ToppingCard/ToppingCard';
 
+import datas from '../../datas/ParfumsList/parfumList';
+import ToppingData from '../../datas/ToppingList/toppingList';
+
 const { Styles } = styleObj;
 
 // Types de navigation stack
@@ -18,47 +21,6 @@ type RootStackParamList = {
 
 type HomeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
-// Données
-const datas = [
-  {
-    titre: 'Mojito',
-    image: require('../../assets/images/Minty Blueberry Mojito Magic_ Alcohol-Free Party Recipe.jpg'),
-  },
-  {
-    titre: 'Hibiscus',
-    image: require('../../assets/images/Hibiscus Iced Tea_ Refreshing Summer Drink Recipe 🌞.jpg'),
-  },
-  {
-    titre: 'Limonade',
-    image: require('../../assets/images/Lemonade and Pineapple Juice Punch Recipe.jpg'),
-  },
-  {
-    titre: 'Autre',
-    image: require('../../assets/images/Cool off with this Frozen Dragon Fruit Pina Colada recipe.jpg'),
-  },
-];
-
-
-const ToppingData = [
-  {
-    titre: 'Limonade',
-    image: require('../../assets/images/Lemonade and Pineapple Juice Punch Recipe.jpg'),
-  },
-  {
-    titre: 'Limonade',
-    desc : "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, commodi?",
-    image: require('../../assets/images/Lemonade and Pineapple Juice Punch Recipe.jpg'),
-  },{
-    titre: 'Limonade',
-    desc : "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, commodi?",
-    image: require('../../assets/images/Lemonade and Pineapple Juice Punch Recipe.jpg'),
-  },
-  {
-    titre: 'Limonade',
-    desc : "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, commodi?",
-    image: require('../../assets/images/Lemonade and Pineapple Juice Punch Recipe.jpg'),
-  },
-]
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
@@ -111,7 +73,7 @@ const styles = StyleSheet.create({
   image: {
     alignSelf: 'center',
     width: '70%',
-    height: 200,
+    height: 240,
     marginVertical: 16,
   },
   sectionTitle: {

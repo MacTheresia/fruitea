@@ -1,39 +1,70 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useEffect, useRef, useState } from 'react';
 
 import HomeScreen from './pages/Home/Home';
 import ProductScreen from './pages/Product/Product';
 import ProductInfoScreen from './pages/ProductInfo/ProductInfo';
-
 import ChangeColorScreen from './pages/ChangeColor';
 import CarteScreen from './pages/Carte';
 import FloatingButton from './components/FloatingButton/FloatingButton';
+import AuthScreen from './pages/AuthScreen/AuthScreen';
+import Header from './components/Header/Header';
 
-
-// Créer la navigation stack
-const Stack = createNativeStackNavigator()
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const navigationRef = useNavigationContainerRef();
+  const [currentRoute, setCurrentRoute] = useState<string | undefined>(undefined);
+
   return (
-    <NavigationContainer>
-        {/* Définir Home comme page par défaut */}
-      <FloatingButton>
-        <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen}/>
-          <Stack.Screen name="Product" component={ProductScreen} />
-          <Stack.Screen name="ProductInfo" component={ProductInfoScreen} />
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        setCurrentRoute(navigationRef.getCurrentRoute()?.name);
+      }}
+      onStateChange={() => {
+        setCurrentRoute(navigationRef.getCurrentRoute()?.name);
+      }}
+    >
+      <Stack.Navigator initialRouteName="auth">
+        <Stack.Screen
+          name="auth"
+          component={AuthScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="Product"
+          component={ProductScreen}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="ProductInfo"
+          component={ProductInfoScreen}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="Carte"
+          component={CarteScreen}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="ChangeColor"
+          component={ChangeColorScreen}
+          options={{ header: () => <Header /> }}
+        />
+      </Stack.Navigator>
 
-          {/* Pour l'exercice avec changement du backgroundColor */}
-          <Stack.Screen name='ChangeColor' component={ChangeColorScreen}/>
-          
-          {/* Pour l'exercice Carte */}
-          <Stack.Screen name='CardRotate' component={CarteScreen}/>
+      {/* N'affiche le FloatingButton que si ce n’est pas la page d’auth */}
+      {currentRoute !== 'auth' && <FloatingButton />}
 
-        </Stack.Navigator>
-      </FloatingButton>
+      <StatusBar style="auto" />
     </NavigationContainer>
   );
 }
-

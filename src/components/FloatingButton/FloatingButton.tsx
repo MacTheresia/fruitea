@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 12,
     margin: 4,
+    padding: 10,
   },
   extraButtonText: {
     color: '#fff',
@@ -107,19 +108,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 6,
     textTransform: 'capitalize',
+    padding: 10,
   },
   floatingButton: {
     backgroundColor: 'tomato',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 80,
+    height: 80,
+    borderRadius: "100%",
     alignItems: 'center',
     justifyContent: 'center',
     // elevation: 5,
     // marginBottom: 1,
   },
   iconImage: {
-    width: 30,
-    height: 30,
+    width: 50,
+    height: 50,
   },
 });

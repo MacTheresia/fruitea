@@ -49,6 +49,16 @@ const CardStyles = StyleSheet.create({
   });
 
 const TextStyles = StyleSheet.create({
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#3a3a3a',
+    marginVertical: 16,
+    marginLeft: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: 'tomato',
+    paddingBottom: 4,
+  },
   text1: {
     fontSize: 16,
     color: '#333333',
@@ -65,9 +75,10 @@ const TextStyles = StyleSheet.create({
   titre: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#2C3E50',
+    color: 'tomato',
     textAlign: 'center',
     marginVertical: 16,
+    fontFamily: "cursive"
   },
 });
 
