@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-
 import FlavorSelector from '../../components/FlavorSelector/FlavorSelector';
 import ToppingSelector from '../../components/ToppingSelector/ToppingSelector';
 import QuantitySelector from '../../components/QuantitySelector/QuantitySelector';
-
-import ProductList from '../../datas/ProductList/productList';
 import ToppingData from '../../datas/ToppingList/toppingList';
 import datas from '../../datas/ParfumsList/parfumList';
-
-const flavorOptions = ['Mangue', 'Ananas', 'Fraise', 'Banane', 'Citron'];
+import { useCart } from "../../contexts/CartContext";
 
 const ActionButton = ({ text, onPress }: { text: string; onPress: () => void }) => (
   <TouchableOpacity style={styles.button} onPress={onPress}>
@@ -22,10 +18,11 @@ const PersonnalizeScreen: React.FC = () => {
   const [selectedQuantity, setSelectedQuantity] = useState<string | null>(null);
   const [selectedFlavors, setSelectedFlavors] = useState<string[]>([]);
   const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
+  const { addToCart } = useCart();
 
-  const quantityOptions = ['250 ml', '500 ml', '750 ml'];
-  const flavorOptions = datas.map(option => option.title);;
-  const toppingOptions = ToppingData.map(topping => topping.titre);;
+  const quantityOptions = ["250 ml", "500 ml", "750 ml"];
+  const flavorOptions = datas.map((option) => option.title);
+  const toppingOptions = ToppingData.map((topping) => topping.titre);
 
   const toggleFlavor = (flavor: string) => {
     if (selectedFlavors.includes(flavor)) {
@@ -44,6 +41,72 @@ const PersonnalizeScreen: React.FC = () => {
   };
 
   if (!isVisible) return null;
+
+  // Fonction pour calculer le prix total
+  const calculateTotalPrice = () => {
+    let total = 0;
+    const quantityMultiplier = { "250 ml": 1, "500 ml": 2, "750 ml": 3 };
+    const multiplier = quantityMultiplier[selectedQuantity ?? "250 ml"] || 1;
+
+    const selectedFlavorPrices = selectedFlavors
+      .map((flavor) => {
+        const item = datas.find((d) => d.title === flavor);
+        return item ? item.prix : 0;
+      })
+      .reduce((a, b) => a + b, 0);
+
+    const selectedToppingPrices = selectedToppings
+      .map((topping) => {
+        const item = ToppingData.find((t) => t.titre === topping);
+        return item ? item.prix : 0;
+      })
+      .reduce((a, b) => a + b, 0);
+
+    total = multiplier * selectedFlavorPrices + selectedToppingPrices;
+
+    return total;
+  };
+
+const handleOrder = () => {
+  if (!selectedQuantity) {
+    alert("Veuillez sélectionner une quantité");
+    return;
+  }
+  if (selectedFlavors.length === 0) {
+    alert("Veuillez sélectionner au moins un parfum");
+    return;
+  }
+   if (selectedToppings.length === 0) {
+     alert("Veuillez sélectionner au moins un parfum");
+     return;
+   }
+
+ 
+  const id = Date.now().toString();
+
+  const name = `Jus ${selectedQuantity} - ${selectedFlavors.join(", ")} - Topping: ${selectedFlavors.join(", ")}`;
+
+
+  const imageData = datas.find((d) => d.title === selectedFlavors[0]);
+  const image = imageData
+    ? imageData.image
+    : require("../../assets/images/buble_tea.jpg");
+
+  const produitPersonnalise = {
+    id,
+    name,
+    image,
+    quantity: parseInt(selectedQuantity, 10),
+    flavors: selectedFlavors,
+    toppings: selectedToppings,
+    price: calculateTotalPrice(),
+  };
+
+  addToCart(produitPersonnalise);
+  setVisible(false);
+  console.log("Produit personnalisé ajouté au panier :", produitPersonnalise);
+};
+
 
   return (
     <View style={styles.container}>
@@ -68,8 +131,11 @@ const PersonnalizeScreen: React.FC = () => {
           toggleOption={toggleTopping}
         />
 
-        <View style={{display:"flex", flexDirection: "row"}}>
-          <ActionButton text="Commander" onPress={() => console.log('Commande validée !')} />
+        <Text style={styles.totalPrice}>
+          Prix total : {calculateTotalPrice()} Ar
+        </Text>
+        <View style={{ display: "flex", flexDirection: "row" }}>
+          <ActionButton text="Commander" onPress={handleOrder} />
           <ActionButton text="Fermer" onPress={() => setVisible(false)} />
         </View>
       </View>
@@ -81,36 +147,36 @@ export default PersonnalizeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     zIndex: 999,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   overlay: {
-    width: '90%',
-    padding: 20,
+    width: "90%",
+    padding: 10,
+    marginLeft:15,
     bottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 16,
     elevation: 5,
   },
   title: {
     fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: 'tomato',
-    textAlign: 'center',
+    fontWeight: "bold",
+    marginTop: 5,
+    color: "tomato",
+    textAlign: "center",
   },
   subtitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
-    color: '#333',
+    color: "#333",
   },
   section: {
     marginBottom: 15,
@@ -119,47 +185,57 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderWidth: 1,
-    borderColor: 'tomato',
+    borderColor: "tomato",
     borderRadius: 20,
     margin: 5,
   },
   radioButtonSelected: {
-    backgroundColor: 'tomato',
+    backgroundColor: "tomato",
   },
   radioText: {
-    color: 'tomato',
-    fontWeight: '600',
+    color: "tomato",
+    fontWeight: "600",
   },
   radioTextSelected: {
-    color: 'white',
+    color: "white",
   },
   checkboxButton: {
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderWidth: 1,
-    borderColor: 'green',
+    borderColor: "green",
     borderRadius: 20,
     margin: 5,
   },
   checkboxButtonSelected: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
   },
   checkboxText: {
-    color: 'green',
-    fontWeight: '600',
+    color: "green",
+    fontWeight: "600",
   },
   checkboxTextSelected: {
-    color: 'white',
+    color: "white",
   },
   button: {
-    backgroundColor: 'tomato',
+    backgroundColor: "tomato",
     padding: 12,
     margin: 5,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
+  },
+  totalPrice: {
+    fontSize: 20,
+    fontWeight: "bold",
+    margin: 10,
+    color: "#faae89",
+    textAlign: "center",
+    textShadowColor: "rgba(0, 0, 0, 0.1)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
 });
