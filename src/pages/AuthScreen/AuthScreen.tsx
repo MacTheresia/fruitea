@@ -17,8 +17,6 @@ import { auth } from "../../firebase/firebaseConfig";
 import { useNavigation } from "@react-navigation/native"; // ✅ React Navigation
 
 export default function AuthScreen() {
-  const navigation = useNavigation<any>(); // ✅ On type "any" ou NavigationProp si tu veux être strict
-
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +24,7 @@ export default function AuthScreen() {
   const [loading, setLoading] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const navigation = useNavigation<any>();
 
   const showCuteAlert = (message: string) => {
     setAlertMessage(message);
@@ -48,8 +47,6 @@ export default function AuthScreen() {
     try {
       if (mode === "signup") {
         await createUserWithEmailAndPassword(auth, email, password);
-        showCuteAlert("Compte créé avec succès ! Vous pouvez maintenant vous connecter.");
-        setMode("login");
       } else {
         await signInWithEmailAndPassword(auth, email, password);
         navigation.reset({
@@ -58,7 +55,6 @@ export default function AuthScreen() {
         });
       }
     } catch (error: any) {
-      console.log("Erreur auth:", error);
       showCuteAlert("Mot de passe ou email incorrect.");
     } finally {
       setLoading(false);
@@ -70,7 +66,6 @@ export default function AuthScreen() {
       <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
         <MaterialIcons name="arrow-back" size={28} color="#faae89" />
       </Pressable>
-
       <View style={styles.header}>
         <MaterialIcons name="lock" size={32} color="#faae89" />
         <Text style={styles.headerText}>
@@ -155,7 +150,7 @@ export default function AuthScreen() {
               style={styles.modalButton}
               onPress={() => setAlertVisible(false)}
             >
-              <Text style={styles.modalButtonText}>D'accord</Text>
+              <Text style={styles.modalButtonText}>D'accord </Text>
             </Pressable>
           </View>
         </View>
@@ -165,7 +160,6 @@ export default function AuthScreen() {
 }
 
 const styles = StyleSheet.create({
-  // 🔥 Copié depuis ton code pour tout garder pareil
   container: {
     flex: 1,
     backgroundColor: "#fcf9f7",

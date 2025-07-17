@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, Feather } from '@expo/vector-icons';
 
 type RootStackParamList = {
   Home: undefined;
@@ -29,10 +29,28 @@ export default function FloatingButton({children}) {
   };
 
   const menuItems = [
-    { label: 'Accueil', icon: <Ionicons name="home" size={18} color="white" />, route: 'Home' },
-    { label: 'Produits',      icon: <MaterialCommunityIcons name="glass-cocktail" size={18} color="white" />, route: 'Product' },
-    { label: 'Commandes',icon: <Ionicons name="receipt" size={18} color="white" />, route: 'Commandes' },
-    { label: 'Infos',    icon: <FontAwesome5 name="info-circle" size={18} color="white" />, route: 'Infos' },
+    {
+      label: "Accueil",
+      icon: <Ionicons name="home" size={18} color="white" />,
+      route: "Home",
+    },
+    {
+      label: "Produits",
+      icon: (
+        <MaterialCommunityIcons name="glass-cocktail" size={18} color="white" />
+      ),
+      route: "Product",
+    },
+    {
+      label: "Commandes",
+      icon: <Ionicons name="receipt" size={18} color="white" />,
+      route: "Commandes",
+    },
+    {
+      label: "Paramètre",
+      icon: <Feather name="settings" size={18} color="white" />,
+      route: "Setting",
+    },
   ];
 
   return (

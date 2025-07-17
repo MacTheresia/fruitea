@@ -1,6 +1,6 @@
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { Picker } from "@react-native-picker/picker";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
 import React, { useState } from "react";
 import {
@@ -14,9 +14,9 @@ import {
   View,
 } from "react-native";
 import { auth } from "../../firebase/firebaseConfig";
-import { useAuth } from "@/hooks/useAuths"; // adapte
+import { useAuth } from "../../hooks/useAuths"; // adapte
 
-import OrderHistory from "../page/OrderHistory";
+import OrderHistory from "../OrderHistory/OrderHistory";
 
 const flags: Record<string, string> = {
   fr: "https://flagcdn.com/w80/fr.png",
@@ -60,7 +60,7 @@ export default function Settings() {
 
   const { user } = useAuth();
 
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const t = texts[language];
 
   const confirmLogout = async () => {
@@ -130,7 +130,7 @@ export default function Settings() {
           label={t.login}
           iconName="login"
           iconColor="#4caf50"
-          onPress={() => router.push("/page/AuthScreen")}
+          onPress={() => navigation.navigate("auth")}
         />
       )}
 
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     backgroundColor: "#fff",
-    paddingTop: 36,
+    paddingTop: 50,
   },
   header: {
     flexDirection: "row",

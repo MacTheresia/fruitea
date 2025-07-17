@@ -8,11 +8,15 @@ import ProductScreen from './pages/Product/Product';
 import ProductInfoScreen from './pages/ProductInfo/ProductInfo';
 import ChangeColorScreen from './pages/ChangeColor';
 import CarteScreen from './pages/Carte';
+import { StripeProvider } from "@stripe/stripe-react-native";
 import FloatingButton from './components/FloatingButton/FloatingButton';
 import AuthScreen from './pages/AuthScreen/AuthScreen';
 import Header from './components/Header/Header';
 import Profile from './pages/Profile/Profile';
 import OrderHistory from './pages/OrderHistory/OrderHistory';
+import OrderFormScreen from './pages/form/OrderFormScreen';
+import Basket from './pages/Basket/Basket';
+import Settings from './pages/Settings/Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +25,7 @@ export default function App() {
   const [currentRoute, setCurrentRoute] = useState<string | undefined>(undefined);
 
   return (
+
     <NavigationContainer
       ref={navigationRef}
       onReady={() => {
@@ -42,7 +47,7 @@ export default function App() {
           options={{ header: () => <Header /> }}
         />
         <Stack.Screen
-          name="Product" 
+          name="Product"
           component={ProductScreen}
           options={{ header: () => <Header /> }}
         />
@@ -51,21 +56,35 @@ export default function App() {
           component={ProductInfoScreen}
           options={{ header: () => <Header /> }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Profile"
           component={Profile}
           options={{ header: () => <Header /> }}
         />
-        
+        <Stack.Screen
+          name="Basket"
+          component={Basket}
+          options={{ header: () => <Header /> }}
+        />
         <Stack.Screen
           name="History"
           component={OrderHistory}
           options={{ header: () => <Header /> }}
         />
+        <Stack.Screen
+          name="Commandes"
+          component={OrderFormScreen}
+          options={{ header: () => <Header /> }}
+        />
+        <Stack.Screen
+          name="Setting"
+          component={Settings}
+          options={{ header: () => <Header /> }}
+        />
       </Stack.Navigator>
 
       {/* N'affiche le FloatingButton que si ce n’est pas la page d’auth */}
-      {currentRoute !== 'auth' && <FloatingButton />}
+      {currentRoute !== "auth" && <FloatingButton />}
 
       <StatusBar style="auto" />
     </NavigationContainer>

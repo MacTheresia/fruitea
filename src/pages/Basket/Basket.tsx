@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { useAuth } from "../../hooks/useAuths"; // chemin selon ton projet
+import { useAuth } from "../../hooks/useAuths";
 
 const mockCartItems = [
   {
@@ -18,11 +18,11 @@ const mockCartItems = [
     name: "Bubble Tea Mocha",
     quantity: 2,
     price: 100,
-    image: require("@/assets/images/buble_tea.jpg"),
+    image: require("../../assets/images/buble_tea.jpg"),
   },
 ];
 
-export default function TabTwoScreen() {
+export default function Basket() {
   const [cartItems, setCartItems] = useState(mockCartItems);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{
@@ -31,8 +31,8 @@ export default function TabTwoScreen() {
   } | null>(null);
   const [showLoginAlert, setShowLoginAlert] = useState(false);
 
-  const { user } = useAuth(); // 👈 vérifie si l'utilisateur est connecté
-  const navigation = useNavigation<any>(); // ✅ React Navigation
+  const { user } = useAuth(); //  vérifie si l'utilisateur est connecté
+  const navigation = useNavigation<any>();
 
   const updateQuantity = (id: string, delta: number) => {
     setCartItems((prev) =>
@@ -46,7 +46,9 @@ export default function TabTwoScreen() {
 
   const handleConfirmRemove = () => {
     if (selectedItem) {
-      setCartItems((prev) => prev.filter((item) => item.id !== selectedItem.id));
+      setCartItems((prev) =>
+        prev.filter((item) => item.id !== selectedItem.id)
+      );
       setSelectedItem(null);
     }
     setModalVisible(false);
@@ -54,7 +56,7 @@ export default function TabTwoScreen() {
 
   const handleValidateOrder = () => {
     if (user) {
-      navigation.navigate("OrderFormScreen", {
+      navigation.navigate("Commandes", {
         cartItems: JSON.stringify(cartItems),
       });
     } else {
@@ -212,7 +214,7 @@ export default function TabTwoScreen() {
                 style={[styles.modalButton, { backgroundColor: "#faae89" }]}
                 onPress={() => {
                   setShowLoginAlert(false);
-                  navigation.navigate("AuthScreen");
+                  navigation.navigate("auth");
                 }}
               >
                 <Text style={[styles.modalButtonText, { color: "#fff" }]}>
@@ -227,7 +229,6 @@ export default function TabTwoScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 45,
     paddingHorizontal: 22,
     paddingBottom: 12,
     gap: 10,
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
-    paddingBottom: 32,
+    paddingBottom: 120,
     borderTopColor: "#fcdcc7",
     borderTopWidth: 1,
     shadowColor: "#000",
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "rgba(150, 147, 147, 0.3)",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 32,
@@ -405,4 +406,5 @@ const styles = StyleSheet.create({
     color: "#aa8c8c",
     textAlign: "center",
   },
+  
 });

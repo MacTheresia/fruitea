@@ -1,5 +1,14 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  collection,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -22,6 +31,11 @@ type Order = {
   id: string;
   status: string;
   date: string;
+  total: number;
+  items: {
+    name: string;
+    quantity: number;
+  }[];
 };
 
 export default function Profile() {
@@ -32,24 +46,53 @@ export default function Profile() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [isSaving, setIsSaving] = useState(false);
   const { user } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
-  const [orders, setOrders] = useState<Order[]>([
-    { id: "001", status: "Livrée", date: "2025-04-12" },
-    { id: "002", status: "En cours", date: "2025-05-05" },
-  ]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (auth.currentUser) {
         setEmail(auth.currentUser.email || "");
+
         const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
         if (userDoc.exists()) {
           setName(userDoc.data().name || "");
         }
       }
     };
+
+    const fetchOrders = async () => {
+      if (!auth.currentUser) return;
+
+      try {
+        const ordersSnapshot = await getDocs(
+          query(
+            collection(db, "orders"),
+            where("userId", "==", auth.currentUser.uid),
+            orderBy("createdAt", "desc")
+          )
+        );
+
+        const ordersList: Order[] = ordersSnapshot.docs
+          .map((doc) => ({
+            id: doc.id,
+            status: doc.data().status || "En cours",
+            date:
+              doc.data().createdAt?.toDate().toLocaleDateString("fr-FR") || "",
+            total: doc.data().total || 0,
+            items: doc.data().items || [],
+          }))
+          .filter((order) => order.status !== "Livrée");
+
+        setOrders(ordersList);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des commandes :", error);
+      }
+    };
+
     fetchUserData();
+    fetchOrders();
   }, []);
 
   const openModal = () => {
@@ -111,9 +154,10 @@ export default function Profile() {
         />
         <Text style={styles.authTitle}>Tu n'es pas connecté(e) !</Text>
         <Text style={styles.authText}>
-          Connecte-toi pour accéder à ton profil, modifier tes infos et suivre tes
-          commandes.
+          Connecte-toi pour accéder à ton profil, modifier tes infos et suivre
+          tes commandes.
         </Text>
+
         <Pressable
           onPress={() => navigation.navigate("auth")}
           style={styles.authButton}
@@ -171,38 +215,55 @@ export default function Profile() {
       <View style={styles.divider} />
 
       <Text style={styles.subtitle}>Suivi des commandes</Text>
-      <FlatList
-        data={orders}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingBottom: 30 }}
-        renderItem={({ item }) => (
-          <View style={styles.orderItem}>
-            <View style={styles.orderHeader}>
-              <Text style={styles.orderText}>Commande #{item.id}</Text>
-              <View
-                style={[
-                  styles.statusBadge,
-                  item.status === "Livrée"
-                    ? styles.statusDelivered
-                    : styles.statusPending,
-                ]}
-              >
-                <Text
+
+      {orders.length === 0 ? (
+        <Text
+          style={{ textAlign: "center", color: "#999", fontStyle: "italic" }}
+        >
+          Aucune commande trouvée
+        </Text>
+      ) : (
+        <FlatList
+          data={orders}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={{ paddingBottom: 30 }}
+          renderItem={({ item }) => (
+            <View style={styles.orderItem}>
+              <View style={styles.orderHeader}>
+                <View style={{ flex: 1 }}>
+                  {item.items.map((product, index) => (
+                    <Text key={index} style={styles.orderText}>
+                      {product.name} x{product.quantity}
+                    </Text>
+                  ))}
+                </View>
+                <View
                   style={[
-                    styles.statusText,
+                    styles.statusBadge,
                     item.status === "Livrée"
-                      ? styles.statusTextDelivered
-                      : styles.statusTextPending,
+                      ? styles.statusDelivered
+                      : styles.statusPending,
                   ]}
                 >
-                  {item.status}
-                </Text>
+                  <Text
+                    style={[
+                      styles.statusText,
+                      item.status === "Livrée"
+                        ? styles.statusTextDelivered
+                        : styles.statusTextPending,
+                    ]}
+                  >
+                    {item.status}
+                  </Text>
+                </View>
               </View>
+
+              <Text style={styles.orderDate}>Date : {item.date}</Text>
+              <Text style={styles.orderDate}>Total : {item.total} Ar</Text>
             </View>
-            <Text style={styles.orderDate}>{item.date}</Text>
-          </View>
-        )}
-      />
+          )}
+        />
+      )}
 
       <Modal transparent visible={modalVisible} animationType="none">
         <Animated.View style={[styles.modalOverlay, { opacity: fadeAnim }]}>
@@ -227,7 +288,6 @@ export default function Profile() {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -238,7 +298,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 30,
+    marginTop: 45,
     paddingHorizontal: 22,
     paddingBottom: 12,
     gap: 10,

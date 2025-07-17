@@ -6,6 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 type RootStackParamList = {
   History: undefined;
   Profile: undefined;
+  Basket: undefined;
 };
 
 export default function HeaderButton() {
@@ -13,7 +14,7 @@ export default function HeaderButton() {
   return (
     <View style={styles.container}>
       <View style={styles.iconWrapper}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Basket")}>
           <AntDesign name="shoppingcart" size={20} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate("Profile")}>

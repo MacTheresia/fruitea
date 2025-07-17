@@ -39,14 +39,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, productInfo }) => {
         <Text style={styles.description} numberOfLines={3}>
           {productInfo.description}
         </Text>
-        <Text>
-          <i>{productInfo.price} Ar</i>
-        </Text>
+        <Text style={{ fontStyle: "italic" }}>{productInfo.price} Ar</Text>
 
         <View style={styles.buttonContainer}>
           <Button
             title="Ajouter au panier"
-            onPress={() => navigation.navigate('ProductInfo', { productInfo })}
+            onPress={() => navigation.navigate("ProductInfo", { productInfo })}
             color="#ff6347"
           />
         </View>

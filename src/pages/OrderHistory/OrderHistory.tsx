@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   Platform,
 } from "react-native";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { auth, db } from "../../firebase/firebaseConfig";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
 
 type Language = "fr" | "en";
 
@@ -30,12 +32,6 @@ const texts = {
   },
 };
 
-const exampleOrders = [
-  { id: "1", date: "2025-07-10", amount: 5.99 },
-  { id: "2", date: "2025-06-15", amount: 7.5 },
-  { id: "3", date: "2025-05-05", amount: 4.2 },
-];
-
 type Props = {
   language: Language;
   onBack: () => void;
@@ -43,8 +39,42 @@ type Props = {
 
 export default function OrderHistory({ language, onBack }: Props) {
   const t = texts[language];
+  const [orders, setOrders] = useState<any[]>([]);
 
-  const renderItem = ({ item }: { item: (typeof exampleOrders)[0] }) => (
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (!auth.currentUser) return;
+
+      try {
+        const q = query(
+          collection(db, "orders"),
+          where("userId", "==", auth.currentUser.uid),
+          orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(q);
+
+        const orderList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          date:
+            doc.data().createdAt?.toDate().toLocaleDateString("fr-FR") || "",
+          amount: doc.data().total || 0,
+        }));
+
+        setOrders(orderList);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des commandes :", error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const renderItem = ({
+    item,
+  }: {
+    item: { id: string; date: string; amount: number };
+  }) => (
     <View style={styles.orderCard}>
       <View style={styles.row}>
         <MaterialIcons name="receipt" size={20} color="#faae89" />
@@ -70,21 +100,21 @@ export default function OrderHistory({ language, onBack }: Props) {
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={onBack}
-        style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]}
-      >
-        <Feather name="arrow-left" size={20} color="#faae89" />
-        <Text style={styles.backText}>{t.back}</Text>
-      </Pressable>
+      <View style={styles.headerRow}>
+        <Pressable
+          onPress={onBack}
+          style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]}
+        >
+          <Feather name="arrow-left" size={26} color="#faae89" />
+        </Pressable>
+        <Text style={styles.title}>{t.title}</Text>
+      </View>
 
-      <Text style={styles.title}>{t.title}</Text>
-
-      {exampleOrders.length === 0 ? (
+      {orders.length === 0 ? (
         <Text style={styles.noOrders}>{t.noOrders}</Text>
       ) : (
         <FlatList
-          data={exampleOrders}
+          data={orders}
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={{ paddingBottom: 30 }}
@@ -100,27 +130,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 24,
-    paddingTop: 36,
+    paddingTop: 70,
   },
-  backBtn: {
+  headerRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
-    gap: 6,
+    gap: 14,
+    marginBottom: 24,
+  },
+  backBtn: {
+    padding: 6,
   },
   pressed: {
     opacity: 0.6,
-  },
-  backText: {
-    color: "#faae89",
-    fontSize: 16,
-    fontWeight: "500",
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#faae89",
-    marginBottom: 18,
   },
   noOrders: {
     fontSize: 17,
