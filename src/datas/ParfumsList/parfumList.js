@@ -16,17 +16,17 @@ const datas = [
   },
   {
     title: "Caramel",
-    image: require("../../assets/images/Cool off with this Frozen Dragon Fruit Pina Colada recipe.jpg"),
+    image: require("../../assets/images/BubleCaramel.jpg"),
     prix: 2700,
   },
   {
     title: "Fraise",
-    image: require("../../assets/images/Cool off with this Frozen Dragon Fruit Pina Colada recipe.jpg"),
+    image: require("../../assets/images/BubleFraise.jpg"),
     prix: 2600,
   },
   {
     title: "Matcha",
-    image: require("../../assets/images/Cool off with this Frozen Dragon Fruit Pina Colada recipe.jpg"),
+    image: require("../../assets/images/BubleMatch.jpg"),
     prix: 2800,
   },
 ];

@@ -85,32 +85,6 @@ export default function Settings() {
         <Text style={styles.headerText}>{t.title}</Text>
       </View>
 
-      <SettingsOptionItem
-        label={t.darkMode}
-        value={darkModeEnabled}
-        onToggle={setDarkModeEnabled}
-      />
-
-      <View style={styles.optionContainer}>
-        <Text style={styles.label}>{t.language}</Text>
-
-        <View style={styles.pickerWithFlag}>
-          <Image source={{ uri: flags[language] }} style={styles.flag} />
-          <View style={styles.pickerWrapper}>
-            <Picker
-              selectedValue={language}
-              onValueChange={(itemValue) => setLanguage(itemValue as Language)}
-              style={styles.picker}
-              dropdownIconColor="#faae89"
-              mode="dropdown"
-            >
-              <Picker.Item label="Français" value="fr" />
-              <Picker.Item label="English" value="en" />
-            </Picker>
-          </View>
-        </View>
-      </View>
-
       <SettingsActionItem
         label={t.orderHistory}
         iconName="history"
@@ -168,7 +142,6 @@ export default function Settings() {
   );
 }
 
-// Composants réutilisables
 const SettingsOptionItem = ({
   label,
   value,
@@ -207,7 +180,6 @@ const SettingsActionItem = ({
   </Pressable>
 );
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

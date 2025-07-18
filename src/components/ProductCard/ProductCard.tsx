@@ -49,9 +49,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, productInfo }) => {
   };
 
   return (
-    <Pressable
-      onPress={() => navigation.navigate("ProductInfo", { productInfo })}
-    >
+
       <View style={styles.card}>
         <Image
           source={productInfo.image}
@@ -74,7 +72,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ title, productInfo }) => {
           </View>
         </View>
       </View>
-    </Pressable>
   );
 };
 

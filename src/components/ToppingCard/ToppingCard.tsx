@@ -4,15 +4,17 @@ import { View, Text, Image, StyleSheet, ImageSourcePropType } from 'react-native
 type Props = {
   titre: string;
   description: string;
+  prix: number;
   image: ImageSourcePropType;
 };
 
-const ToppingCard: React.FC<Props> = ({ titre, description, image }) => {
+const ToppingCard: React.FC<Props> = ({ titre, description, image, prix }) => {
   return (
     <View style={styles.card}>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{titre}</Text>
         <Text style={styles.description}>{description}</Text>
+        <Text style={styles.prix}>{prix} Ar</Text>
       </View>
       <Image source={image} style={styles.image} resizeMode="cover" />
     </View>
@@ -21,13 +23,13 @@ const ToppingCard: React.FC<Props> = ({ titre, description, image }) => {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     margin: 12,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
@@ -39,13 +41,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
+  },
+  prix: {
+    fontWeight: "bold",
+    fontSize: 14,
+    color: "#d45757",
   },
   image: {
     width: 80,

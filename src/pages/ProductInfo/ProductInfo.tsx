@@ -22,7 +22,7 @@ type ProductInfoRouteProp = RouteProp<RootStackParamList, 'ProductInfo'>;
 
 const ProductInfoScreen: React.FC = () => {
   const route = useRoute<ProductInfoRouteProp>();
-  // Récupérer les props
+
   const {title, description, datePublication } = route.params.productInfo;
 
   return (

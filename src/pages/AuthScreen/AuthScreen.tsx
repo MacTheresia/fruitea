@@ -14,7 +14,7 @@ import {
   Modal,
 } from "react-native";
 import { auth } from "../../firebase/firebaseConfig";
-import { useNavigation } from "@react-navigation/native"; // ✅ React Navigation
+import { useNavigation } from "@react-navigation/native";
 
 export default function AuthScreen() {
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -51,7 +51,7 @@ export default function AuthScreen() {
         await signInWithEmailAndPassword(auth, email, password);
         navigation.reset({
           index: 0,
-          routes: [{ name: "Profile" }], // ✅ adapte le nom du screen
+          routes: [{ name: "Profile" }],
         });
       }
     } catch (error: any) {
@@ -72,7 +72,7 @@ export default function AuthScreen() {
           {mode === "login" ? "Connexion" : "Inscription"}
         </Text>
       </View>
-
+      <Text style={styles.label}>Vous n'êtes pas encore connecté</Text>
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}

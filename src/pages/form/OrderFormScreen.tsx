@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -14,7 +15,8 @@ import { Feather } from "@expo/vector-icons";
 import { useAuth } from "../../hooks/useAuths";
 import { useStripe } from "@stripe/stripe-react-native";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { db } from "../../firebase/firebaseConfig";
+import {auth, db } from "../../firebase/firebaseConfig";
+
 
 type CartItem = {
   id: string;
@@ -144,6 +146,29 @@ export default function OrderFormScreen() {
       alert("Une erreur est survenue.");
     }
   };
+  if (!user) {
+    return (
+      <View style={styles.authContainer}>
+        <MaterialIcons
+          name="lock-outline"
+          size={60}
+          color="#faae89"
+          style={{ marginBottom: 20 }}
+        />
+        <Text style={styles.authTitle}>Tu n'es pas connecté(e) !</Text>
+        <Text style={styles.authText}>
+          Connecte-toi pour pouvoir commander
+        </Text>
+
+        <Pressable
+          onPress={() => navigation.navigate("auth")}
+          style={styles.authButton}
+        >
+          <Text style={styles.authButtonText}>Se connecter</Text>
+        </Pressable>
+      </View>
+    );
+  }
 
   return (
     <>
@@ -513,6 +538,45 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   confirmButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  authContainer: {
+    flex: 1,
+    backgroundColor: "#fcf9f7",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 40,
+  },
+  authTitle: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#faae89",
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  authText: {
+    fontSize: 16,
+    color: "#555",
+    textAlign: "center",
+    marginBottom: 32,
+    paddingHorizontal: 10,
+  },
+  authButton: {
+    backgroundColor: "#faae89",
+    paddingVertical: 14,
+    paddingHorizontal: 48,
+    borderRadius: 30,
+    marginBottom: 14,
+    elevation: 3,
+    shadowColor: "#faae89",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  authButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
